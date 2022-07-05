@@ -172,27 +172,84 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.drizzle))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
-            R.drawable.rainy_background
+            R.drawable.drizzle_background
             )
             activityMainBinding.llMainBgAbove.background = ContextCompat.getDrawable(
                 this@MainActivity,
-                R.drawable.rainy_background
+                R.drawable.drizzle_background
 
             )
+            activityMainBinding.ivWeatherBg.setImageResource(R.drawable.drizzle_background)
+            activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.rainyicon)
+
         }else if (id in 500..531) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor=resources.getColor(R.color.drizzle)
-            activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.drizzle))
+            window.statusBarColor=resources.getColor(R.color.rain)
+            activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.rain))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
                 R.drawable.rainy_background
             )
-            activityMainBinding.llMainBgAbove.background = ContextCompat.getDrawable(
+            activityMainBinding.llMainBgBelow.background = ContextCompat.getDrawable(
                 this@MainActivity,
                 R.drawable.rainy_background
 
             )
+            activityMainBinding.ivWeatherBg.setImageResource(R.drawable.rainy_background)
+            activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.rainyicon)
+
+        }else if (id in 600..620) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.statusBarColor=resources.getColor(R.color.snow)
+            activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.snow))
+            activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
+                this@MainActivity,
+                R.drawable.snow_background
+            )
+            activityMainBinding.llMainBgBelow.background = ContextCompat.getDrawable(
+                this@MainActivity,
+                R.drawable.snow_background
+
+            )
+            activityMainBinding.ivWeatherBg.setImageResource(R.drawable.snow_background)
+            activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.misticon)
+
+        }else if (id in 701..781) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.statusBarColor=resources.getColor(R.color.mist)
+            activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.mist))
+            activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
+                this@MainActivity,
+                R.drawable.mist_background
+            )
+            activityMainBinding.llMainBgBelow.background = ContextCompat.getDrawable(
+                this@MainActivity,
+                R.drawable.mist_background
+
+            )
+            activityMainBinding.ivWeatherBg.setImageResource(R.drawable.mist_background)
+            activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.misticon)
+
+        }else if (id in 701..781) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.statusBarColor=resources.getColor(R.color.mist)
+            activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.mist))
+            activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
+                this@MainActivity,
+                R.drawable.mist_background
+            )
+            activityMainBinding.llMainBgBelow.background = ContextCompat.getDrawable(
+                this@MainActivity,
+                R.drawable.mist_background
+
+            )
+            activityMainBinding.ivWeatherBg.setImageResource(R.drawable.mist_background)
+            activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.misticon)
+
         }
     }
     @RequiresApi(Build.VERSION_CODES.O)

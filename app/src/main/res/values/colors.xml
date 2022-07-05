@@ -20,4 +20,5 @@
     <color name="atmosphere">#A8B4CC</color>
     <color name="clear">#FF9D6F</color>
     <color name="clouds">#454A4C</color>
+    <color name="mist">#FFD3CFCF</color>
    </resources>
