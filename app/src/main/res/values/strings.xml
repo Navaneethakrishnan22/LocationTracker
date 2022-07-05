@@ -3,4 +3,28 @@
     <string name="Search_bar">Search location here</string>
     <string name="location_txt">See the weather of location below</string>
     <string name="Result"> </string>
+    <string name="demo_date">4 July 3:00 pm</string>
+    <string name="default_numbers">100</string>
+    <string name="pressure">Pressure</string>
+    <string name="max_temp">Max Temp</string>
+    <string name="humidity">Humidity</string>
+    <string name="min_temp">Min Temp</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="temperature">Temperature in F</string>
+    <string name="day">Day 17</string>
+    <string name="night">Night 9</string>
+    <string name="main_temp">16*</string>
+    <string name="feels_alike">Feels alike 16*</string>
+    <string name="weather_type">Drizzle</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+
+
+
+
+
+
+
+
+
 </resources>

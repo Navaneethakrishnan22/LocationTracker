@@ -14,7 +14,14 @@
         <entry key="..\:/Android/LocationTracker/app/src/main/res/drawable/rainy_background.xml" value="0.1435" />
         <entry key="..\:/Android/LocationTracker/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Android/LocationTracker/app/src/main/res/layout/search_sample.xml" value="0.221025641025641" />
+        <entry key="app/src/main/res/drawable/cloud_background.xml" value="0.298" />
+        <entry key="app/src/main/res/drawable/drizzle_background.xml" value="0.2955" />
+        <entry key="app/src/main/res/drawable/rainy_background.xml" value="0.2955" />
+        <entry key="app/src/main/res/drawable/snow_background.xml" value="0.298" />
+        <entry key="app/src/main/res/drawable/thunderstrom_background.xml" value="0.2955" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
       </map>
     </option>
   </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>
