@@ -14,6 +14,8 @@ import android.provider.ContactsContract.Intents.Insert.ACTION
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -22,6 +24,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.core.location.LocationManagerCompat.isLocationEnabled
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -48,18 +51,51 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityMainBinding=DataBindingUtil.setContentView(this,R.layout.activity_main)
+        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         supportActionBar?.hide()
-        activityMainBinding.clMainLayout.visibility=View.GONE
+        activityMainBinding.clMainLayout.visibility = View.GONE
 
-        fusedLocationProviderClient=LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        getCurrentLocation();
+        getCurrentLocation()
 
-}
-    private fun getCurrentLocation()
-    {
-        if (cheakPermission()) {
+        activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                getCityWeather(activityMainBinding.etGetCityName.text.toString())
+                val view = this.currentFocus
+                if (view != null) {
+                    val imm: InputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    activityMainBinding.etGetCityName.clearFocus()
+                }
+                true
+            } else false
+
+        })
+
+
+    }
+
+    private fun getCityWeather(cityName: String) {
+        activityMainBinding.progressLoading.visibility = View.VISIBLE
+        ApiUtilities.getApiInterface()?.getCityWeatherData(cityName, API_KEY)
+            ?.enqueue(object : Callback<ModelClass> {
+                override fun onResponse(call: Call<ModelClass>, response: Response<ModelClass>) {
+                    setDataOnViews(response.body())
+                }
+
+                override fun onFailure(call: Call<ModelClass>, t: Throwable) {
+                    Toast.makeText(applicationContext, "Not a Valid City Name", Toast.LENGTH_SHORT)
+                        .show()
+
+                }
+            })
+
+    }
+
+    private fun getCurrentLocation() {
+        if (checkPermissions()) {
             if (isLocationEnabled()) {
                 if (ActivityCompat.checkSelfPermission(
                         this,
@@ -88,16 +124,14 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }
-        }
-          else
-            {
+        } else {
             requestPermissions()
-            }
+        }
 
     }
 
     private fun fetchCurrentLocationWeather(latitude: String, langitude: String) {
-        activityMainBinding.pbLoading.Visibility = View.VISIBLE
+        activityMainBinding.progressLoading.visibility = View.VISIBLE
         ApiUtilities.getApiInterface()?.getCurrentWeatherData(latitude, langitude, API_KEY)
             ?.enqueue(object :
                 Callback<ModelClass> {
@@ -109,29 +143,30 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<ModelClass>, t: Throwable) {
-                    Toast.makeText(applicationContext,"Error",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Error", Toast.LENGTH_SHORT).show()
                 }
             })
 
     }
 
     private fun setDataOnViews(body: ModelClass?) {
-        val sdf=SimpleDateFormat("dd/mm/yyyy hh:mm")
-        val currentDate=sdf.format(Date())
-        activityMainBinding.tvDateAndTime.text=currentDate
+        val sdf = SimpleDateFormat("dd/mm/yyyy hh:mm")
+        val currentDate = sdf.format(Date())
+        activityMainBinding.tvDateAndTime.text = currentDate
 
-        activityMainBinding.tvDayMaxTemp.text=  "Day " + kelvinToCelcius(body!!.main.temp_max) + "°"
-        activityMainBinding.tvDayMaxTemp.text=  "Day " + kelvinToCelcius(body!!.main.temp_min) + "°"
-        activityMainBinding.tvTemp.text=  "" + kelvinToCelcius(body!!.main.temp) +   "°"
-        activityMainBinding.tvFeelsAlike.text=  "" + kelvinToCelcius(body!!.main.feels_like) + "°"
-        activityMainBinding.tvWeatherType.text=  body.weather[0].main
-        activityMainBinding.tvSunrise.text= timeStampToLocalDate(body.sys.sunrise.toLong())
-        activityMainBinding.tvSunset.text= timeStampToLocalDate(body.sys.sunset.toLong())
-        activityMainBinding.tvPressure.text=body.main.pressure.toString()
-        activityMainBinding.tvHumidity.text=body.main.humidity.toString() +"%"
-        activityMainBinding.tvWindSpeed.text=body.wind.speed.toString() +" m/s "
+        activityMainBinding.tvDayMaxTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_max) + "°"
+        activityMainBinding.tvDayMaxTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_min) + "°"
+        activityMainBinding.tvTemp.text = "" + kelvinToCelcius(body!!.main.temp) + "°"
+        activityMainBinding.tvFeelsAlike.text = "" + kelvinToCelcius(body!!.main.feels_like) + "°"
+        activityMainBinding.tvWeatherType.text = body.weather[0].main
+        activityMainBinding.tvSunrise.text = timeStampToLocalDate(body.sys.sunrise.toLong())
+        activityMainBinding.tvSunset.text = timeStampToLocalDate(body.sys.sunset.toLong())
+        activityMainBinding.tvPressure.text = body.main.pressure.toString()
+        activityMainBinding.tvHumidity.text = body.main.humidity.toString() + "%"
+        activityMainBinding.tvWindSpeed.text = body.wind.speed.toString() + " m/s "
 
-        activityMainBinding.tvTempFarenheat.text=""+((kelvinToCelcius(body.main.temp)).times(1.8).plus(32).roundToInt())
+        activityMainBinding.tvTempFarenheat.text =
+            "" + ((kelvinToCelcius(body.main.temp)).times(1.8).plus(32).roundToInt())
         activityMainBinding.etGetCityName.setText(body.name)
 
 
@@ -139,9 +174,9 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
     private fun UpdateUI(id: Int) {
-        if(id in 200..232)
-        {
+        if (id in 200..232) {
             //thunderstrom
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -149,11 +184,11 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.thunderStrom))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
-                 R.drawable.thunderstrom_background
+                R.drawable.thunderstrom_background
             )
             activityMainBinding.llMainBgBelow.background = ContextCompat.getDrawable(
                 this@MainActivity,
-                 R.drawable.thunderstrom_background
+                R.drawable.thunderstrom_background
 
             )
             activityMainBinding.llMainBgAbove.background = ContextCompat.getDrawable(
@@ -164,14 +199,14 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.ivWeatherBg.setImageResource(R.drawable.thunderstrom_background)
             activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.thunder)
 
-       } else if (id in 300..321) {
+        } else if (id in 300..321) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor=resources.getColor(R.color.drizzle)
+            window.statusBarColor = resources.getColor(R.color.drizzle)
             activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.drizzle))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
-            R.drawable.drizzle_background
+                R.drawable.drizzle_background
             )
             activityMainBinding.llMainBgAbove.background = ContextCompat.getDrawable(
                 this@MainActivity,
@@ -181,10 +216,10 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.ivWeatherBg.setImageResource(R.drawable.drizzle_background)
             activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.drizzle)
 
-        }else if (id in 500..531) {
+        } else if (id in 500..531) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor=resources.getColor(R.color.rain)
+            window.statusBarColor = resources.getColor(R.color.rain)
             activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.rain))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
@@ -198,10 +233,10 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.ivWeatherBg.setImageResource(R.drawable.rainy_background)
             activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.rainyicon)
 
-        }else if (id in 600..620) {
+        } else if (id in 600..620) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor=resources.getColor(R.color.snow)
+            window.statusBarColor = resources.getColor(R.color.snow)
             activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.snow))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
@@ -215,10 +250,10 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.ivWeatherBg.setImageResource(R.drawable.snow_background)
             activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.misticon)
 
-        }else if (id in 701..781) {
+        } else if (id in 701..781) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor=resources.getColor(R.color.mist)
+            window.statusBarColor = resources.getColor(R.color.mist)
             activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.mist))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
@@ -232,10 +267,10 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.ivWeatherBg.setImageResource(R.drawable.mist_background)
             activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.misticon)
 
-        }else if (id in 701..781) {
+        } else if (id in 701..781) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor=resources.getColor(R.color.mist)
+            window.statusBarColor = resources.getColor(R.color.mist)
             activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.mist))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
@@ -249,10 +284,10 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.ivWeatherBg.setImageResource(R.drawable.mist_background)
             activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.misticon)
 
-        }else if (id == 800) {
+        } else if (id == 800) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.statusBarColor=resources.getColor(R.color.clear)
+            window.statusBarColor = resources.getColor(R.color.clear)
             activityMainBinding.clToolBar.setBackgroundColor(resources.getColor(R.color.clear))
             activityMainBinding.clSubLayout.background = ContextCompat.getDrawable(
                 this@MainActivity,
@@ -266,7 +301,7 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.ivWeatherBg.setImageResource(R.drawable.clear_sky_bacground)
             activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.clearskyicon)
 
-        }else{
+        } else {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.statusBarColor = resources.getColor(R.color.ash)
@@ -283,12 +318,13 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.ivWeatherIcon.setImageResource(R.drawable.cloudyicon)
 
         }
-        activityMainBinding.pbLoading.visibility = View.GONE
+        activityMainBinding.progressLoading.visibility = View.GONE
         activityMainBinding.clMainLayout.visibility = View.VISIBLE
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun timeStampToLocalDate(timeStamp: Long): String{
-        val localTime= timeStamp.let {
+    private fun timeStampToLocalDate(timeStamp: Long): String {
+        val localTime = timeStamp.let {
             Instant.ofEpochMilli(it)
                 .atZone(ZoneId.systemDefault())
                 .toLocalTime()
@@ -299,22 +335,47 @@ class MainActivity : AppCompatActivity() {
     private fun kelvinToCelcius(temp: Double): Double {
         var intTemp = temp
         intTemp = intTemp.minus(273)
-        return intTemp.toBigDecimal().setScale(1,RoundingMode.UP).toDouble()
+        return intTemp.toBigDecimal().setScale(1, RoundingMode.UP).toDouble()
     }
 
     private fun isLocationEnabled(): Boolean {
-        TODO("NOTHING")
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
     }
 
-    private fun requestPermissions() { }
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            PERMISSION_REQUEST_ACCESS_LOCATION
+        )
 
-    companion object{
+    }
+
+    companion object {
         private const val PERMISSION_REQUEST_ACCESS_LOCATION = 100
-        const val API_KEY= "dab3af44de7d24ae7ff86549334e45bd"
+        const val API_KEY = "dab3af44de7d24ae7ff86549334e45bd"
     }
 
-    private fun cheakPermission(): Boolean {
-        TODO("NOTHING")
+    private fun checkPermissions(): Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+
+            )
+            == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+        }
+        return false
     }
 
     override fun onRequestPermissionsResult(

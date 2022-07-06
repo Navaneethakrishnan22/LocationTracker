@@ -5,20 +5,20 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import com.shop.mobile.locationtracker.POJO.ModelClass
 
-interface ApiInterface  {
+interface ApiInterface {
 
     @GET("weather")
     fun getCurrentWeatherData(
-        @Query("lat") latitude:String,
-        @Query("lon") logitude:String,
-        @Query("APPID") api_key:String
-    ):retrofit2.Call<ModelClass>
+        @Query("lat") latitude: String,
+        @Query("lon") logitude: String,
+        @Query("APPID") api_key: String
+    ): retrofit2.Call<ModelClass>
 
     @GET("weather")
-    fun getCityWeatherDatodelClassa(
-        @Query("q") cityName:String,
-        @Query("APPID") api_key:String
-    ):retrofit2.Call<ModelClass>
+    fun getCityWeatherData(
+        @Query("q") cityName: String,
+        @Query("APPID") api_key: String
+    ): retrofit2.Call<ModelClass>
 
 
 }
