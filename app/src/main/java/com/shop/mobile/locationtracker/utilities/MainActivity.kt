@@ -7,6 +7,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
@@ -45,9 +46,9 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         supportActionBar?.hide()
         activityMainBinding.clMainLayout.visibility = View.GONE
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         fetchCurrentLocationWeather("12.9716","77.5946");
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
         getCurrentLocation()
 
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
@@ -127,6 +128,7 @@ class MainActivity : AppCompatActivity() {
             ?.enqueue(object :
                 Callback<ModelClass> {
                 override fun onResponse(call: Call<ModelClass>, response: Response<ModelClass>) {
+                    Log.i("NAVNEETH","on Response "+response.body())
                     if (response.isSuccessful) {
                         setDataOnViews(response.body())
                     }
