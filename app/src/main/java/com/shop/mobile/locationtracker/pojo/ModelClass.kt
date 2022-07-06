@@ -1,8 +1,7 @@
 package com.shop.mobile.locationtracker.pojo
 
 import com.google.gson.annotations.SerializedName
-import com.shop.mobile.locationtracker.POJO.Sys
-import com.shop.mobile.locationtracker.POJO.Wind
+
 
 
 data class ModelClass(

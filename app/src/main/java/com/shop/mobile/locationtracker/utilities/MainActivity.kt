@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.clMainLayout.visibility = View.GONE
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
+        fetchCurrentLocationWeather("12.9716","77.5946");
         getCurrentLocation()
 
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
