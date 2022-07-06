@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -40,10 +41,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityMainBinding=DataBindingUtil.setContentView(this,R.layout.activity_main)
         supportActionBar?.hide()
+        fetchCurrentLocationWeather("12.9716","77.5946");
         activityMainBinding.clMainLayout.visibility=View.GONE
-
         fusedLocationProviderClient=LocationServices.getFusedLocationProviderClient(this)
-
         getCurrentLocation()
 
 }
@@ -88,13 +88,16 @@ class MainActivity : AppCompatActivity() {
             ?.enqueue(object :
                 Callback<ModelClass> {
                 override fun onResponse(call: Call<ModelClass>, response: Response<ModelClass>) {
+                    Log.i("NAVNEETH","SUCCESS "+response)
                     if (response.isSuccessful) {
+                        Log.i("NAVNEETH","SUCCESS "+response.body())
                         setDataOnViews(response.body())
                     }
 
                 }
 
                 override fun onFailure(call: Call<ModelClass>, t: Throwable) {
+                    Log.i("NAVNEETH","error ")
                     Toast.makeText(applicationContext,"Error",Toast.LENGTH_SHORT).show()
                 }
             })

@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiUtilities {
     private var retrofit: Retrofit? = null
-    var BASE_URL="https://api.openweathermap.org/data/2.5/weather?lat=";
+    var BASE_URL="https://api.openweathermap.org/data/2.5/";
     fun getApiInterface():ApiInterface?{
         if (retrofit==null)
         {
