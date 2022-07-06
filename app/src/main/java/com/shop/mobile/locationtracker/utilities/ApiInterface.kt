@@ -1,25 +1,24 @@
-package com.shop.mobile.locationtracker.utilities
+package com.shop.mobile.locationtracker.Utilities
 
-
-import com.shop.mobile.locationtracker.pojo.ModelClass
-import retrofit2.Call
+import android.telecom.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import com.shop.mobile.locationtracker.POJO.ModelClass
 
-interface ApiInterface  {
+interface ApiInterface {
 
     @GET("weather")
     fun getCurrentWeatherData(
-        @Query("lat") latitude:String,
-        @Query("lon") logitude:String,
-        @Query("APPID") api_key:String
-    ): Call<ModelClass>
+        @Query("lat") latitude: String,
+        @Query("lon") logitude: String,
+        @Query("APPID") api_key: String
+    ): retrofit2.Call<ModelClass>
 
     @GET("weather")
     fun getCityWeatherData(
-        @Query("q") cityName:String,
-        @Query("APPID") api_key:String
-    ):Call<ModelClass>
+        @Query("q") cityName: String,
+        @Query("APPID") api_key: String
+    ): retrofit2.Call<ModelClass>
 
 
 }
