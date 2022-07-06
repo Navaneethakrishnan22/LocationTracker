@@ -18,7 +18,7 @@
         android:theme="@style/Theme.LocationTracker"
         tools:targetApi="31">
         <activity
-            android:name=".Utilities.MainActivity"
+            android:name=".utilities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

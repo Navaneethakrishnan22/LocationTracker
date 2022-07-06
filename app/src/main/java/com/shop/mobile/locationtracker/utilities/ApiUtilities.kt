@@ -1,13 +1,7 @@
-package com.shop.mobile.locationtracker.Utilities
+package com.shop.mobile.locationtracker.utilities
 
-import android.telecom.PhoneAccount.builder
-import com.google.android.material.shape.ShapeAppearanceModel.builder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.stream.DoubleStream.builder
-import java.util.stream.IntStream.builder
-import java.util.stream.LongStream.builder
-import java.util.stream.Stream.builder
 
 object ApiUtilities {
     private var retrofit: Retrofit? = null

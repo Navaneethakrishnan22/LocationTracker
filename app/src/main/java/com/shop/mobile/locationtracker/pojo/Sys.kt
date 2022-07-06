@@ -1,4 +1,4 @@
-package com.shop.mobile.locationtracker.POJO
+package com.shop.mobile.locationtracker.pojo
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,5 +8,4 @@ data class Sys(
     @SerializedName("country") val country:String,
     @SerializedName("Sunrise") val sunrise:Int,
     @SerializedName("sunset") val sunset:Int
-
 )

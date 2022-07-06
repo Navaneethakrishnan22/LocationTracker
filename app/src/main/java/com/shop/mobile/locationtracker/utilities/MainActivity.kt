@@ -1,32 +1,22 @@
-package com.shop.mobile.locationtracker.Utilities
+package com.shop.mobile.locationtracker.utilities
 
-import android.content.Context
+
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.media.audiofx.Equalizer
 import android.os.Build
 import android.os.Bundle
-import android.provider.Contacts.Intents.Insert.ACTION
-import android.provider.ContactsContract.Intents.Insert.ACTION
-import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat.isLocationEnabled
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.shop.mobile.locationtracker.POJO.ModelClass
+import com.shop.mobile.locationtracker.pojo.ModelClass
 import com.shop.mobile.locationtracker.R
 import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
 import retrofit2.Call
@@ -93,7 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchCurrentLocationWeather(latitude: String, langitude: String) {
-        activityMainBinding.pbLoading.Visibility = View.VISIBLE
+        activityMainBinding.progressLoading.visibility = View.VISIBLE
         ApiUtilities.getApiInterface()?.getCurrentWeatherData(latitude, langitude, API_KEY)
             ?.enqueue(object :
                 Callback<ModelClass> {
@@ -268,7 +258,7 @@ class MainActivity : AppCompatActivity() {
         return intTemp.toBigDecimal().setScale(1,RoundingMode.UP).toDouble()
     }
 
-    private fun isLocationEnabled() { }
+    private fun isLocationEnabled(): Boolean {return false }
 
     private fun requestPermissions() { }
 
@@ -278,7 +268,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cheakPermission(): Boolean
-    { }
+    {
+        return true
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

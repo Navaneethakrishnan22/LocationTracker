@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="78dp"
-                app:layout_constraintStart_toEnOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="parent"
                 tools:ignore="NotSibling">
 
@@ -168,8 +168,7 @@
                                 android:layout_height="100dp"
                                 android:layout_marginTop="@dimen/padding_large"
                                 android:layout_marginEnd="@dimen/padding_large"
-                                android:src="@drawable/sunicon"
-                                android:drawablebackground="#FFE293F0" />
+                                android:src="@drawable/sunicon" />
 
 
                         </LinearLayout>

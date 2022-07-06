@@ -1,9 +1,10 @@
-package com.shop.mobile.locationtracker.Utilities
+package com.shop.mobile.locationtracker.utilities
 
-import android.telecom.Call
+
+import com.shop.mobile.locationtracker.pojo.ModelClass
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
-import com.shop.mobile.locationtracker.POJO.ModelClass
 
 interface ApiInterface  {
 
@@ -12,13 +13,13 @@ interface ApiInterface  {
         @Query("lat") latitude:String,
         @Query("lon") logitude:String,
         @Query("APPID") api_key:String
-    ):Call<com.shop.mobile.locationtracker.POJO.ModelClass>
+    ): Call<ModelClass>
 
     @GET("weather")
     fun getCityWeatherData(
         @Query("q") cityName:String,
         @Query("APPID") api_key:String
-    ):Call<com.shop.mobile.locationtracker.POJO.ModelClass>
+    ):Call<ModelClass>
 
 
 }
