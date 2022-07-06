@@ -12,13 +12,13 @@ interface ApiInterface  {
         @Query("lat") latitude:String,
         @Query("lon") logitude:String,
         @Query("APPID") api_key:String
-    ):Call<com.shop.mobile.locationtracker.POJO.ModelClass>
+    ):retrofit2.Call<ModelClass>
 
     @GET("weather")
-    fun getCityWeatherData(
+    fun getCityWeatherDatodelClassa(
         @Query("q") cityName:String,
         @Query("APPID") api_key:String
-    ):Call<com.shop.mobile.locationtracker.POJO.ModelClass>
+    ):retrofit2.Call<ModelClass>
 
 
 }
