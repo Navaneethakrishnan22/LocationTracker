@@ -1,9 +1,10 @@
 package com.shop.mobile.locationtracker.Utilities
 
 import android.telecom.Call
+import com.shop.mobile.locationtracker.pojo.ModelClass
 import retrofit2.http.GET
 import retrofit2.http.Query
-import com.shop.mobile.locationtracker.POJO.ModelClass
+
 
 interface ApiInterface {
 
