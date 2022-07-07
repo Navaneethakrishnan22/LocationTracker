@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Weather App</string>
+    <string name="api_key">Paste your API key here</string>
     <string name="Search_bar">Search location here</string>
     <string name="location_txt">See the weather of location below</string>
     <string name="Result"> </string>

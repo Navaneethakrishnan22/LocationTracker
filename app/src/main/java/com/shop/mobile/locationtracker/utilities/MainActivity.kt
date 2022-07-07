@@ -12,12 +12,15 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.shop.mobile.locationtracker.R
@@ -34,11 +37,13 @@ import java.time.ZoneId
 import java.util.*
 import kotlin.math.roundToInt
 
-
+private val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var activityMainBinding: ActivityMainBinding
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: Note_Adapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +55,17 @@ class MainActivity : AppCompatActivity() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         getCurrentLocation()
+
+
+
+
+        recyclerView = findViewById(R.id.Recycler)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        setData()
+
+
 
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -67,6 +83,11 @@ class MainActivity : AppCompatActivity() {
         })
 
 
+    }
+
+    private fun setData() {
+        val database = MyDatabase.getInstance(applicationContext)
+        val noteDao =database!!.NoteDao()
     }
 
     private fun getCityWeather(cityName: String) {
@@ -147,10 +168,10 @@ class MainActivity : AppCompatActivity() {
         val currentDate = sdf.format(Date())
         activityMainBinding.tvDateAndTime.text = currentDate
 
-        activityMainBinding.tvDayMaxTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_max) + "°"
-        activityMainBinding.tvDayMaxTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_min) + "°"
-        activityMainBinding.tvTemp.text = "" + kelvinToCelcius(body!!.main.temp) + "°"
-        activityMainBinding.tvFeelsAlike.text = "" + kelvinToCelcius(body!!.main.feels_like) + "°"
+        activityMainBinding.tvDayMaxTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_max)+"°"
+        activityMainBinding.tvDayMinTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_min)+"°"
+        activityMainBinding.tvTemp.text = "" + kelvinToCelcius(body!!.main.temp)+"°"
+        activityMainBinding.tvFeelsAlike.text = "" + kelvinToCelcius(body!!.main.feels_like)+"°"
         activityMainBinding.tvWeatherType.text = body.weather[0].main
         activityMainBinding.tvSunrise.text = timeStampToLocalDate(body.sys.sunrise.toLong())
         activityMainBinding.tvSunset.text = timeStampToLocalDate(body.sys.sunset.toLong())

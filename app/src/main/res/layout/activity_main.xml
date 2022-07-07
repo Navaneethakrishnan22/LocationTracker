@@ -70,6 +70,7 @@
                             android:textColor="@color/black" />
 
 
+
                     </androidx.cardview.widget.CardView>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -156,11 +157,12 @@
                                 android:id="@+id/tv_temp"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
                                 android:layout_weight="1"
                                 android:fontFamily="sans-serif-medium"
                                 android:text="@string/main_temp"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/text_super_large" />
+                                android:textSize="50sp" />
 
                             <ImageView
                                 android:id="@+id/iv_weather_icon"
@@ -204,6 +206,15 @@
 
 
                     </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/Recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_vertical">
+
+
+                </androidx.recyclerview.widget.RecyclerView>
 
 
                 </FrameLayout>
