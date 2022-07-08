@@ -12,21 +12,19 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.shop.mobile.locationtracker.R
 import com.shop.mobile.locationtracker.Utilities.ApiUtilities
 import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
 import com.shop.mobile.locationtracker.pojo.ModelClass
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,12 +36,12 @@ import java.util.*
 import kotlin.math.roundToInt
 
 private val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var activityMainBinding: ActivityMainBinding
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: Note_Adapter
+    private lateinit var myDatabase: MyDatabase
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,21 +49,20 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         supportActionBar?.hide()
         activityMainBinding.clMainLayout.visibility = View.GONE
-        fetchCurrentLocationWeather("12.9716","77.5946");
+        fetchCurrentLocationWeather("12.9716", "77.5946");
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
+
+        activityMainBinding.etGetCityName.setOnClickListener{
+            writeData()
+        }
+
+        activityMainBinding.Result.setOnClickListener {
+            readData()
+        }
         getCurrentLocation()
 
-
-
-
-        recyclerView = findViewById(R.id.Recycler)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        setData()
-
-
+        /*setData()*/
 
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -84,11 +81,50 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+     private fun writeData()
+     {
+       val cityName = activityMainBinding.etGetCityName.text.toString()
+         val temp = activityMainBinding.tvTemp.text.toString()
 
-    private fun setData() {
+
+         if (cityName.isNotEmpty() && temp.isNotEmpty() ){
+             val note = Note(
+                 cityName,temp.toString()
+             )
+             GlobalScope.launch (Dispatchers.IO){
+                 myDatabase.noteDao().insert(note)
+             }
+             activityMainBinding.etGetCityName.text.clear()
+             activityMainBinding.tvTemp.text.insert()
+
+             Toast.makeText(this@MainActivity,"Successfully written",Toast.LENGTH_SHORT).show()
+         }else{
+             Toast.makeText(this@MainActivity,"Please enter the location",Toast.LENGTH_SHORT).show()
+         }
+     }
+     private fun readData()
+     {
+        val result = activityMainBinding.Result.text.toString()
+
+        if (result.isEmpty()){
+            lateinit var note:Note
+
+            GlobalScope.launch {
+                note = myDatabase.noteDao().getAllNote(result.toString())
+            }
+        }
+     }
+
+    /*private fun setData() {
         val database = MyDatabase.getInstance(applicationContext)
-        val noteDao =database!!.NoteDao()
-    }
+        val noteDao = database!!.noteDao()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val list = noteDao.getAllNote()
+
+
+        }
+    }*/
 
     private fun getCityWeather(cityName: String) {
         activityMainBinding.progressLoading.visibility = View.VISIBLE
@@ -149,7 +185,7 @@ class MainActivity : AppCompatActivity() {
             ?.enqueue(object :
                 Callback<ModelClass> {
                 override fun onResponse(call: Call<ModelClass>, response: Response<ModelClass>) {
-                    Log.i("NAVNEETH","on Response "+response.body())
+                    Log.i("NAVNEETH", "on Response " + response.body())
                     if (response.isSuccessful) {
                         setDataOnViews(response.body())
                     }
@@ -168,10 +204,10 @@ class MainActivity : AppCompatActivity() {
         val currentDate = sdf.format(Date())
         activityMainBinding.tvDateAndTime.text = currentDate
 
-        activityMainBinding.tvDayMaxTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_max)+"°"
-        activityMainBinding.tvDayMinTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_min)+"°"
-        activityMainBinding.tvTemp.text = "" + kelvinToCelcius(body!!.main.temp)+"°"
-        activityMainBinding.tvFeelsAlike.text = "" + kelvinToCelcius(body!!.main.feels_like)+"°"
+        activityMainBinding.tvDayMaxTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_max) + "°"
+        activityMainBinding.tvDayMinTemp.text = "Day " + kelvinToCelcius(body!!.main.temp_min) + "°"
+        activityMainBinding.tvTemp.text = "" + kelvinToCelcius(body!!.main.temp) + "°"
+        activityMainBinding.tvFeelsAlike.text = "" + kelvinToCelcius(body!!.main.feels_like) + "°"
         activityMainBinding.tvWeatherType.text = body.weather[0].main
         activityMainBinding.tvSunrise.text = timeStampToLocalDate(body.sys.sunrise.toLong())
         activityMainBinding.tvSunset.text = timeStampToLocalDate(body.sys.sunset.toLong())

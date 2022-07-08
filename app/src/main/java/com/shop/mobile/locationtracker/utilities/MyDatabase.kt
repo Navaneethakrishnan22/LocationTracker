@@ -10,6 +10,7 @@ abstract class MyDatabase : RoomDatabase() {
 
     companion object
     {
+       @Volatile
        private var INSTANCE:MyDatabase? = null
 
         fun getInstance(context: Context) : MyDatabase?
@@ -32,6 +33,6 @@ abstract class MyDatabase : RoomDatabase() {
         }
     }
 
-    abstract fun NoteDao():NoteDao
+    abstract fun noteDao():NoteDao
 
 }
