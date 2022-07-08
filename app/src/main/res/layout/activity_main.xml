@@ -207,14 +207,26 @@
 
                     </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/Recycler"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_gravity="center_vertical">
 
 
-                </androidx.recyclerview.widget.RecyclerView>
+                            <TextView
+                                android:id="@+id/Result"
+                                android:layout_width="350dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="25dp"
+                                android:textSize="25sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="MissingConstraints" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
                 </FrameLayout>
