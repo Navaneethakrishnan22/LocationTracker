@@ -19,5 +19,8 @@ interface NoteDao {
 
     //fetch
     @Query("SELECT * FROM note_Table WHERE et_get_city_name & tv_temp LIKE :et_get_city_name LIMIT 1")
-    suspend fun getAllNote(et_get_city_name: String) : Note
+    suspend fun findByCity(et_get_city_name: String) : Note
+
+    @Query("SELECT * FROM note_Table")
+    fun getAll() : List<Note>
 }

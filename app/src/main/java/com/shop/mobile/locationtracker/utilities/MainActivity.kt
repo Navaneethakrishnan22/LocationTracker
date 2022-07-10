@@ -53,7 +53,9 @@ class MainActivity : AppCompatActivity() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
 
-        activityMainBinding.etGetCityName.setOnClickListener{
+        myDatabase = MyDatabase.getDatabase(this)
+
+            activityMainBinding.etGetCityName.setOnClickListener{
             writeData()
         }
 
@@ -84,25 +86,37 @@ class MainActivity : AppCompatActivity() {
      private fun writeData()
      {
        val cityName = activityMainBinding.etGetCityName.text.toString()
+         val dateTime =activityMainBinding.tvDateAndTime.text.toString()
          val temp = activityMainBinding.tvTemp.text.toString()
 
 
-         if (cityName.isNotEmpty() && temp.isNotEmpty() ){
+         if (cityName.isNotEmpty() && dateTime.isNotEmpty() && temp.isNotEmpty()){
              val note = Note(
-                 cityName,temp.toString()
+                 null,cityName,dateTime,temp.toString()
              )
              GlobalScope.launch (Dispatchers.IO){
-                 myDatabase.noteDao().insert(note)
+                 myDatabase.noteDao().addNote(note)
              }
              activityMainBinding.etGetCityName.text.clear()
-             activityMainBinding.tvTemp.text.insert()
+             activityMainBinding.tvDateAndTime.text.clear()
+             activityMainBinding.tvTemp.text.clear()
 
              Toast.makeText(this@MainActivity,"Successfully written",Toast.LENGTH_SHORT).show()
          }else{
              Toast.makeText(this@MainActivity,"Please enter the location",Toast.LENGTH_SHORT).show()
          }
      }
-     private fun readData()
+
+     private suspend fun displayData(note: Note){
+
+        withContext(Dispatchers.Main){
+            activityMainBinding.etGetCityName.text = note.et_get_city_name
+            activityMainBinding.tvDateAndTime.text = note.tv_date_and_time
+            activityMainBinding.tvTemp.text = note.tv_temp.toString()
+        }
+     }
+
+    private fun readData()
      {
         val result = activityMainBinding.Result.text.toString()
 
@@ -110,7 +124,8 @@ class MainActivity : AppCompatActivity() {
             lateinit var note:Note
 
             GlobalScope.launch {
-                note = myDatabase.noteDao().getAllNote(result.toString())
+                note = myDatabase.noteDao().findByCity(result.toString())
+                displayData(note)
             }
         }
      }

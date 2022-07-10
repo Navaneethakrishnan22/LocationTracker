@@ -7,6 +7,7 @@ import androidx.room.Entity
 @Entity(tableName = "note_Table")
 data class Note(
     var et_get_city_name: String,
+    var tv_date_and_time:String,
     var tv_temp: String,
 
     var Result:String

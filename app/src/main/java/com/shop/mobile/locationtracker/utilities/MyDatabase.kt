@@ -8,12 +8,13 @@ import androidx.room.RoomDatabase
 @Database(entities = [Note:: class], version = 1, exportSchema = false)
 abstract class MyDatabase : RoomDatabase() {
 
+
     companion object
     {
        @Volatile
        private var INSTANCE:MyDatabase? = null
 
-        fun getInstance(context: Context) : MyDatabase?
+        fun getDatabase(context: Context) : MyDatabase?
         {
             if (INSTANCE==null)
             {
