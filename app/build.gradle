@@ -38,6 +38,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.annotation:annotation:1.4.0'
     def room_version = "2.4.2"
 
 
