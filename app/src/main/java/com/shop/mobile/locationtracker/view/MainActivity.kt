@@ -1,4 +1,4 @@
-package com.shop.mobile.locationtracker.utilities
+package com.shop.mobile.locationtracker.view
 
 import android.content.Context
 import android.content.Intent
@@ -13,6 +13,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -22,8 +23,12 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.shop.mobile.locationtracker.R
 import com.shop.mobile.locationtracker.Utilities.ApiUtilities
+import com.shop.mobile.locationtracker.data.Person
+
 import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
-import com.shop.mobile.locationtracker.pojo.ModelClass
+import com.shop.mobile.locationtracker.model.ModelClass
+
+import com.shop.mobile.locationtracker.viewmodel.MainViewModel
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -41,7 +46,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var activityMainBinding: ActivityMainBinding
-    private lateinit var noteDao: NoteDao
+
+    private val mainViewModel: MainViewModel by viewModels()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,21 +58,32 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.clMainLayout.visibility = View.GONE
         fetchCurrentLocationWeather("12.9716", "77.5946");
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        noteDao = MyDatabase.getDatabase(this)!!.noteDao()
 
-
-
-        activityMainBinding.etGetCityName.setOnClickListener {
+        getCity()
+        /*    activityMainBinding.etGetCityName.setOnClickListener{
             writeData()
         }
 
         activityMainBinding.Result.setOnClickListener {
             readData()
         }
-        getCurrentLocation()
+        getCurrentLocation()*/
 
         /*setData()*/
 
+        /*if (personDatabase==null)
+        {
+            return getCity()
+        }
+        else if (personDatabase!==null)
+        {
+            return
+        }*/
+
+    }
+
+
+    private fun getCity() {
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 getCityWeather(activityMainBinding.etGetCityName.text.toString())
@@ -82,64 +101,63 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-
-    private fun writeData() {
-        val cityName = activityMainBinding.etGetCityName.text.toString()
-        val dateTime = activityMainBinding.tvDateAndTime.text.toString()
+    /*private fun writeData()
+    {
+      val cityname = activityMainBinding.etGetCityName.text.toString()
+        val datetime =activityMainBinding.tvDateAndTime.text.toString()
         val temp = activityMainBinding.tvTemp.text.toString()
 
 
-        if (cityName.isNotEmpty() && dateTime.isNotEmpty() && temp.isNotEmpty()) {
-            val note = Note(
-                0,
-                cityName, dateTime, temp.toString(), ""
+        if (cityname.isNotEmpty() && datetime.isNotEmpty() && temp.isNotEmpty()){
+            val person = Person(
+                null,cityname,datetime,temp.toString()
             )
-            GlobalScope.launch(Dispatchers.IO) {
-                noteDao.addNote(note)
+            GlobalScope.launch (Dispatchers.IO){
+                myDatabase.noteDao().addNote(person)
             }
             activityMainBinding.etGetCityName.text.clear()
-            activityMainBinding.tvDateAndTime.text = ""
-            activityMainBinding.tvTemp.text = ""
+            activityMainBinding.tvDateAndTime.text.clear()
+            activityMainBinding.tvTemp.text.clear()
 
-            Toast.makeText(this@MainActivity, "Successfully written", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this@MainActivity, "Please enter the location", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(this@MainActivity,"Successfully written",Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(this@MainActivity,"Please enter the location",Toast.LENGTH_SHORT).show()
         }
     }
 
-    private suspend fun displayData(note: Note) {
+    private suspend fun displayData(person: Person){
 
-        withContext(Dispatchers.Main) {
-            activityMainBinding.etGetCityName.setText(note.et_get_city_name)
-            activityMainBinding.tvDateAndTime.text = note.tv_date_and_time
-            activityMainBinding.tvTemp.text = note.tv_temp.toString()
-        }
+       withContext(Dispatchers.Main){
+           activityMainBinding.etGetCityName.text = person.cityname.toString()
+           activityMainBinding.tvDateAndTime.text = person.datetime.toString()
+           activityMainBinding.tvTemp.text = person.temp.toString()
+       }
     }
 
-    private fun readData() {
-        val result = activityMainBinding.Result.text.toString()
+   private fun readData()
+    {
+       val result = activityMainBinding.Result.text.toString()
 
-        if (result.isEmpty()) {
-            lateinit var note: Note
+       if (result.isEmpty()){
+           lateinit var person: Person
 
-            GlobalScope.launch {
-              //  note = noteDao.findByCity(result.toString())
-                displayData(note)
-            }
-        }
+           GlobalScope.launch {
+               person = myDatabase.noteDao().findByCity(result.toString())
+               displayData(person)
+           }
+       }
     }
 
-    /*private fun setData() {
-        val database = MyDatabase.getInstance(applicationContext)
-        val noteDao = database!!.noteDao()
+   private fun setData() {
+       val database = MyDatabase.getInstance(applicationContext)
+       val noteDao = database!!.noteDao()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val list = noteDao.getAllNote()
+       CoroutineScope(Dispatchers.IO).launch {
+           val list = noteDao.getAllNote()
 
 
-        }
-    }*/
+       }
+   }*/
 
     private fun getCityWeather(cityName: String) {
         activityMainBinding.progressLoading.visibility = View.VISIBLE
@@ -453,5 +471,4 @@ class MainActivity : AppCompatActivity() {
 
 
 }
-
 

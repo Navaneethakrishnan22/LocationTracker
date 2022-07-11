@@ -1,4 +1,4 @@
-package com.shop.mobile.locationtracker.pojo
+package com.shop.mobile.locationtracker.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -12,9 +12,6 @@ data class ModelClass(
     @SerializedName("sys") val sys: Sys,
     @SerializedName("id") val id:Int,
     @SerializedName("name") val name:String
-
-
-
 
 )
 

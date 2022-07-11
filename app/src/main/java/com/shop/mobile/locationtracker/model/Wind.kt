@@ -1,4 +1,4 @@
-package com.shop.mobile.locationtracker.pojo
+package com.shop.mobile.locationtracker.model
 
 import com.google.gson.annotations.SerializedName
 
