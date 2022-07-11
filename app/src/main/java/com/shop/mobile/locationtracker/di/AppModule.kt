@@ -1,14 +1,13 @@
 package com.shop.mobile.locationtracker.di
 
-import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.shop.mobile.locationtracker.Utilities.ApiInterface
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.shop.mobile.locationtracker.apiservice.WeatherApiService
 import com.shop.mobile.locationtracker.constants.LocationConstants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,15 +29,15 @@ object AppModule {
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(LocationConstants.BASE_URL)
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .addConverterFactory(gsonConverterFactory)
             .build()
     }
 
     @Singleton
     @Provides
-    fun provideAPiService(retrofit: Retrofit): ApiInterface =
-        retrofit.create(ApiInterface::class.java)
-
+    fun provideWeatherAPiService(retrofit: Retrofit): WeatherApiService =
+        retrofit.create(WeatherApiService::class.java)
 
     @Provides
     fun provideGson(): Gson = GsonBuilder().create()

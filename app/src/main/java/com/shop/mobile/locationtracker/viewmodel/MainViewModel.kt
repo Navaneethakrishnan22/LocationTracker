@@ -43,4 +43,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun fetchWeatherAPi(){
+        viewModelScope.launch (Dispatchers.IO){
+
+        }
+    }
+
 }

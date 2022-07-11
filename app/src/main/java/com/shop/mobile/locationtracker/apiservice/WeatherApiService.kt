@@ -1,21 +1,21 @@
-package com.shop.mobile.locationtracker.utilities
+package com.shop.mobile.locationtracker.apiservice
 
 import com.shop.mobile.locationtracker.model.ModelClass
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface WeatherAPiService {
+interface WeatherApiService {
 
     @GET("weather")
-    fun getCurrentWeatherData(
+    suspend fun getCurrentWeatherData(
         @Query("lat") latitude: String,
         @Query("lon") logitude: String,
         @Query("APPID") api_key: String
-    ): retrofit2.Call<ModelClass>
+    ): ModelClass
 
     @GET("weather")
-    fun getCityWeatherData(
+    suspend fun getCityWeatherData(
         @Query("q") cityName: String,
         @Query("APPID") api_key: String
-    ): retrofit2.Call<ModelClass>
+    ): ModelClass
 }
