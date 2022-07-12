@@ -19,17 +19,32 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.shop.mobile.locationtracker.R
 import com.shop.mobile.locationtracker.Utilities.ApiUtilities
 import com.shop.mobile.locationtracker.data.Person
+import com.shop.mobile.locationtracker.data.PersonDao
 
 import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
+import com.shop.mobile.locationtracker.db.AppDatabase
 import com.shop.mobile.locationtracker.model.ModelClass
-
+import com.shop.mobile.locationtracker.repository.PersonRepository
+import com.shop.mobile.locationtracker.repository.WeatherRepository
+import com.shop.mobile.locationtracker.utilities.Resource
+import com.shop.mobile.locationtracker.utilities.Status
+import com.shop.mobile.locationtracker.utils.MockData
+import com.shop.mobile.locationtracker.viewmodel.SampleViewModel
 import com.shop.mobile.locationtracker.viewmodel.MainViewModel
+
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,18 +53,22 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 private val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+@AndroidEntryPoint
+
+class MainActivity : AppCompatActivity()  {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var activityMainBinding: ActivityMainBinding
-
+    private val sampleViewModel: SampleViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
-
-
+    private val weatherData = MutableLiveData<Resource<ModelClass>>()
+    private val appDatabase = AppDatabase
+    private lateinit var personDao: PersonDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,26 +78,10 @@ class MainActivity : AppCompatActivity() {
         fetchCurrentLocationWeather("12.9716", "77.5946");
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
+        sampleViewModel.insertPersonData()
+        sampleViewModel.readPersonData()
+
         getCity()
-        /*    activityMainBinding.etGetCityName.setOnClickListener{
-            writeData()
-        }
-
-        activityMainBinding.Result.setOnClickListener {
-            readData()
-        }
-        getCurrentLocation()*/
-
-        /*setData()*/
-
-        /*if (personDatabase==null)
-        {
-            return getCity()
-        }
-        else if (personDatabase!==null)
-        {
-            return
-        }*/
 
     }
 
@@ -86,81 +89,34 @@ class MainActivity : AppCompatActivity() {
     private fun getCity() {
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                getCityWeather(activityMainBinding.etGetCityName.text.toString())
-                val view = this.currentFocus
-                if (view != null) {
-                    val imm: InputMethodManager =
-                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(view.windowToken, 0)
-                    activityMainBinding.etGetCityName.clearFocus()
+                if (appDatabase!=null)
+                {
+                    personDao.searchDatabase(activityMainBinding.etGetCityName.toString())
+
+                }
+                else {
+                    getCityWeather(activityMainBinding.etGetCityName.text.toString())
+                    val view = this.currentFocus
+                    if (view != null) {
+                        val imm: InputMethodManager =
+                            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                        activityMainBinding.etGetCityName.clearFocus()
+
+                        personDao.insertPersonData(person = activityMainBinding.etGetCityName.toString())
+                    }
                 }
                 true
+
             } else false
 
         })
 
 
     }
-    /*private fun writeData()
-    {
-      val cityname = activityMainBinding.etGetCityName.text.toString()
-        val datetime =activityMainBinding.tvDateAndTime.text.toString()
-        val temp = activityMainBinding.tvTemp.text.toString()
 
 
-        if (cityname.isNotEmpty() && datetime.isNotEmpty() && temp.isNotEmpty()){
-            val person = Person(
-                null,cityname,datetime,temp.toString()
-            )
-            GlobalScope.launch (Dispatchers.IO){
-                myDatabase.noteDao().addNote(person)
-            }
-            activityMainBinding.etGetCityName.text.clear()
-            activityMainBinding.tvDateAndTime.text.clear()
-            activityMainBinding.tvTemp.text.clear()
-
-            Toast.makeText(this@MainActivity,"Successfully written",Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(this@MainActivity,"Please enter the location",Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private suspend fun displayData(person: Person){
-
-       withContext(Dispatchers.Main){
-           activityMainBinding.etGetCityName.text = person.cityname.toString()
-           activityMainBinding.tvDateAndTime.text = person.datetime.toString()
-           activityMainBinding.tvTemp.text = person.temp.toString()
-       }
-    }
-
-   private fun readData()
-    {
-       val result = activityMainBinding.Result.text.toString()
-
-       if (result.isEmpty()){
-           lateinit var person: Person
-
-           GlobalScope.launch {
-               person = myDatabase.noteDao().findByCity(result.toString())
-               displayData(person)
-           }
-       }
-    }
-
-   private fun setData() {
-       val database = MyDatabase.getInstance(applicationContext)
-       val noteDao = database!!.noteDao()
-
-       CoroutineScope(Dispatchers.IO).launch {
-           val list = noteDao.getAllNote()
-
-
-       }
-   }*/
-
-    private fun getCityWeather(cityName: String) {
-        activityMainBinding.progressLoading.visibility = View.VISIBLE
+    private fun getCityWeather(cityName: String)  {
         ApiUtilities.getApiInterface()?.getCityWeatherData(cityName, API_KEY)
             ?.enqueue(object : Callback<ModelClass> {
                 override fun onResponse(call: Call<ModelClass>, response: Response<ModelClass>) {

@@ -14,8 +14,10 @@ import com.shop.mobile.locationtracker.utilities.Status
 import com.shop.mobile.locationtracker.viewmodel.MainViewModel
 import com.shop.mobile.locationtracker.viewmodel.SampleViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @AndroidEntryPoint
+@HiltViewModel
 class SampleActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding
     private val sampleViewModel: SampleViewModel by viewModels()
@@ -33,10 +35,10 @@ class SampleActivity : AppCompatActivity() {
         sampleViewModel.fetchWeatherInformation().observe(this, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
-                    Log.i("Navneeth", "THe WEather Data " + it.data!!.name)
+                    Log.i("Navneeth", "THe Weather Data " + it.data!!.name)
                 }
                 Status.LOADING -> {
-
+                    Toast.makeText(this,it.message, Toast.LENGTH_SHORT).show()
                 }
                 Status.ERROR -> {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()

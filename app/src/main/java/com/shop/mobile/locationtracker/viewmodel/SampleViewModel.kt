@@ -27,6 +27,7 @@ class SampleViewModel @Inject constructor(
 
     private val weatherData = MutableLiveData<Resource<ModelClass>>()
 
+
     fun insertPersonData() {
         viewModelScope.launch(Dispatchers.IO) {
             var personList = MockData.getPersonData()

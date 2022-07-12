@@ -10,7 +10,10 @@ import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(private val weatherApiService: WeatherApiHelperImpl){
 
+
+
     suspend fun fetchWeatherData(latitude: String, longitude: String) : Flow<ModelClass> {
         return weatherApiService.getCurrentWeatherData(latitude, longitude)
     }
+
 }
