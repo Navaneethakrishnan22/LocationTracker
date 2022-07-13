@@ -19,32 +19,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.shop.mobile.locationtracker.R
 import com.shop.mobile.locationtracker.Utilities.ApiUtilities
-import com.shop.mobile.locationtracker.data.Person
 import com.shop.mobile.locationtracker.data.PersonDao
 
 import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
 import com.shop.mobile.locationtracker.db.AppDatabase
 import com.shop.mobile.locationtracker.model.ModelClass
-import com.shop.mobile.locationtracker.repository.PersonRepository
-import com.shop.mobile.locationtracker.repository.WeatherRepository
 import com.shop.mobile.locationtracker.utilities.Resource
-import com.shop.mobile.locationtracker.utilities.Status
-import com.shop.mobile.locationtracker.utils.MockData
 import com.shop.mobile.locationtracker.viewmodel.SampleViewModel
 import com.shop.mobile.locationtracker.viewmodel.MainViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,7 +42,6 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.util.*
-import javax.inject.Inject
 import kotlin.math.roundToInt
 
 private val TAG = "MainActivity"
@@ -81,34 +69,40 @@ class MainActivity : AppCompatActivity()  {
         sampleViewModel.insertPersonData()
         sampleViewModel.readPersonData()
 
-        getCity()
-
+        getCity();
     }
 
 
-    private fun getCity() {
+    private fun getCity(args: Array<String>
+    ): Unit {
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                if (appDatabase!=null)
+                if (actionId!=null)
                 {
                     personDao.searchDatabase(activityMainBinding.etGetCityName.text.toString())
 
-                    if (actionId==activityMainBinding.etGetCityName){
+                    if (actionId == activityMainBinding.etGetCityName.text.toString())
+                    {
                         personDao.getPersons(activityMainBinding.etGetCityName,activityMainBinding.tvDateAndTime,activityMainBinding.tvTemp)
                     }
 
                 }
                 else {
-                    getCityWeather(activityMainBinding.etGetCityName.text.toString())
-                    val view = this.currentFocus
-                    if (view != null) {
-                        val imm: InputMethodManager =
-                            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(view.windowToken, 0)
-                        activityMainBinding.etGetCityName.clearFocus()
+                        getCityWeather(activityMainBinding.etGetCityName.text.toString())
+                        val view = this.currentFocus
+                        if (view != null) {
+                            val imm: InputMethodManager =
+                                getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view.windowToken, 0)
+                            activityMainBinding.etGetCityName.clearFocus()
 
-                        personDao.insertPersonData(activityMainBinding.etGetCityName,activityMainBinding.tvDateAndTime,activityMainBinding.tvTemp)
-                    }
+                            personDao.insertPersonData(
+                                activityMainBinding.etGetCityName,
+                                activityMainBinding.tvDateAndTime,
+                                activityMainBinding.tvTemp
+                            )
+                        }
+
                 }
                 true
 

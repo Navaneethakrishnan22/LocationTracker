@@ -25,5 +25,5 @@ interface PersonDao {
     }
 
     @Query("SELECT * FROM person_table")
-    fun getPersons(): Flow<List<Person>>
+    fun getPersons(cityname: Any?): Flow<List<Person>>
 }
