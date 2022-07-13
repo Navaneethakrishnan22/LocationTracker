@@ -15,7 +15,7 @@ class PersonRepository @Inject constructor(private val weatherApiService: Weathe
     }
 
     fun readData(): Flow<List<Person>> {
-        return personDao.getPersons(personDao.getPersons(arrayOf(String)))
+        return personDao.getPersons(personDao)
     }
 
     suspend fun insertData(person: Person) {

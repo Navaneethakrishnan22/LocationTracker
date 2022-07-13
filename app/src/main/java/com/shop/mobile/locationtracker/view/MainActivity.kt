@@ -73,21 +73,10 @@ class MainActivity : AppCompatActivity()  {
     }
 
 
-    private fun getCity(args: Array<String>
-    ): Unit {
+    private fun getCity()
+    {
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                if (actionId!=null)
-                {
-                    personDao.searchDatabase(activityMainBinding.etGetCityName.text.toString())
-
-                    if (actionId == activityMainBinding.etGetCityName.text.toString())
-                    {
-                        personDao.getPersons(activityMainBinding.etGetCityName,activityMainBinding.tvDateAndTime,activityMainBinding.tvTemp)
-                    }
-
-                }
-                else {
                         getCityWeather(activityMainBinding.etGetCityName.text.toString())
                         val view = this.currentFocus
                         if (view != null) {
@@ -96,11 +85,6 @@ class MainActivity : AppCompatActivity()  {
                             imm.hideSoftInputFromWindow(view.windowToken, 0)
                             activityMainBinding.etGetCityName.clearFocus()
 
-                            personDao.insertPersonData(
-                                activityMainBinding.etGetCityName,
-                                activityMainBinding.tvDateAndTime,
-                                activityMainBinding.tvTemp
-                            )
                         }
 
                 }
@@ -110,8 +94,6 @@ class MainActivity : AppCompatActivity()  {
 
         })
 
-
-    }
 
 
     private fun getCityWeather(cityName: String)  {
