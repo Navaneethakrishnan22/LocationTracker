@@ -91,7 +91,11 @@ class MainActivity : AppCompatActivity()  {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (appDatabase!=null)
                 {
-                    personDao.searchDatabase(activityMainBinding.etGetCityName.toString())
+                    personDao.searchDatabase(activityMainBinding.etGetCityName.text.toString())
+
+                    if (actionId==activityMainBinding.etGetCityName){
+                        personDao.getPersons(activityMainBinding.etGetCityName,activityMainBinding.tvDateAndTime,activityMainBinding.tvTemp)
+                    }
 
                 }
                 else {
@@ -103,7 +107,7 @@ class MainActivity : AppCompatActivity()  {
                         imm.hideSoftInputFromWindow(view.windowToken, 0)
                         activityMainBinding.etGetCityName.clearFocus()
 
-                        personDao.insertPersonData(person = activityMainBinding.etGetCityName.toString())
+                        personDao.insertPersonData(activityMainBinding.etGetCityName,activityMainBinding.tvDateAndTime,activityMainBinding.tvTemp)
                     }
                 }
                 true
