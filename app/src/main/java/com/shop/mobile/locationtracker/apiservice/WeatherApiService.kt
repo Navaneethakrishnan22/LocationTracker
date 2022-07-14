@@ -1,6 +1,7 @@
 package com.shop.mobile.locationtracker.apiservice
 
 import com.shop.mobile.locationtracker.model.ModelClass
+import com.shop.mobile.locationtracker.model.city.CityData
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -17,5 +18,5 @@ interface WeatherApiService {
     suspend fun getCityWeatherData(
         @Query("q") cityName: String,
         @Query("APPID") api_key: String
-    ): ModelClass
+    ): CityData
 }

@@ -25,18 +25,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 class SampleActivity : AppCompatActivity() {
     private lateinit var activtysamplebinding: ActivitySampleBinding
     private val sampleViewModel: SampleViewModel by viewModels()
-    private lateinit  var autoSuggestionView:AutoCompleteTextView
+    private lateinit var autoSuggestionView: AutoCompleteTextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activtysamplebinding = DataBindingUtil.setContentView(this, R.layout.activity_sample)
         initializeAutoComplete()
+        fetchWeatherBasedonCity()
     }
 
     private fun initializeAutoComplete() {
         autoSuggestionView = activtysamplebinding.autoTextView
         autoSuggestionView.apply {
-            threshold = 1
+            threshold = 3
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -53,39 +54,22 @@ class SampleActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchWeatherBasedonCity(){
+    private fun fetchWeatherBasedonCity() {
         activtysamplebinding.apply {
             btn.setOnClickListener {
-              var  autotext =  activtysamplebinding.autoTextView.text.toString()
-               Log.i("Navneeth","Entered Text "+autotext)
-                getSuggestionForCity("c")
+                var autotext = activtysamplebinding.autoTextView.text.toString()
+                Log.i("Navneeth","TExt in AutoText "+autotext)
+                getWeatherDataByCity(autotext)
+
             }
         }
     }
 
-    private fun setupWeatherObserver() {
-        sampleViewModel.fetchWeatherInformationByCoordinates("","").observe(this, Observer {
+    private fun getWeatherUpdatesByCoordintes() {
+        sampleViewModel.fetchWeatherInformationByCoordinates("", "").observe(this, Observer {
             when (it.status) {
                 Status.SUCCESS -> {
                     Log.i("Navneeth", "THe Weather Data " + it.data!!.name)
-                }
-                Status.LOADING -> {
-                   // Toast.makeText(this,it.message, Toast.LENGTH_SHORT).show()
-                }
-                Status.ERROR -> {
-                    //Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
-    }
-
-
-    private fun getWeatherDataByCity(cityName:String){
-        sampleViewModel.fetchWeatherInformationByCoordinates("8.9564","77.3152").observe(this, Observer {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    Log.i("Navneeth", "THe Weather Data " + it.data!!.name)
-                    activtysamplebinding.weatherResult.text = "CityNAme "+ it.data!!.name + " Temp "+it.data?.main?.temp
                 }
                 Status.LOADING -> {
                     // Toast.makeText(this,it.message, Toast.LENGTH_SHORT).show()
@@ -97,28 +81,50 @@ class SampleActivity : AppCompatActivity() {
         })
     }
 
-    private fun getSuggestionForCity(search:String){
+
+    private fun getWeatherDataByCity(cityName: String) {
+        sampleViewModel.fetchWeatherInformationByCityName(cityName)
+            .observe(this, Observer {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        Log.i("Navneeth", "THe Weather Data " + it.data!!.name)
+                        activtysamplebinding.weatherResult.text =
+                            "CityName :" + it.data!!.name + "----> Temp :  " + it.data?.main?.temp
+                    }
+                    Status.LOADING -> {
+
+                    }
+                    Status.ERROR -> {
+                        //Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+    }
+
+    private fun getSuggestionForCity(search: String) {
         var suggestionList = sampleViewModel.fetchCityNameForSuggestion(search)
         suggestionList.observe(this, Observer {
-            when(it.status){
-                Status.ERROR->{
-                    Log.i("Navneeth","Suggestion ERROR "+it.message)
+            when (it.status) {
+                Status.ERROR -> {
+                    Log.i("Navneeth", "Suggestion ERROR " + it.message)
                 }
-                Status.SUCCESS->{
-                    if(it.data!=null) {
+                Status.SUCCESS -> {
+                    if (it.data != null) {
                         plugSuggestion(it.data!!)
                     }
                 }
-                Status.LOADING->{
+                Status.LOADING -> {
 
                 }
             }
         })
     }
 
-    private fun plugSuggestion(suggestionList:List<String>){
-        var suggestionadapters = ArrayAdapter(this,
-            android.R.layout.simple_list_item_1, suggestionList)
+    private fun plugSuggestion(suggestionList: List<String>) {
+        var suggestionadapters = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1, suggestionList
+        )
         autoSuggestionView.setAdapter(suggestionadapters)
         suggestionadapters.notifyDataSetChanged()
     }

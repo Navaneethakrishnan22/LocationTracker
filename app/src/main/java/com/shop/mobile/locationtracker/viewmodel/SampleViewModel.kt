@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shop.mobile.locationtracker.model.ModelClass
+import com.shop.mobile.locationtracker.model.city.CityData
 import com.shop.mobile.locationtracker.repository.SuggestionRepository
 import com.shop.mobile.locationtracker.repository.WeatherRepository
 import com.shop.mobile.locationtracker.utilities.Resource
@@ -22,10 +23,12 @@ class SampleViewModel @Inject constructor(
 
 ) : ViewModel(){
 
-    private val weatherData = MutableLiveData<Resource<ModelClass>>()
+    private val weatherData = MutableLiveData<Resource<CityData>>()
     private val suggestionData = MutableLiveData<Resource<List<String>>>()
+    private val weatherDataByCoordinates = MutableLiveData<Resource<ModelClass>>()
 
-    fun fetchWeatherInformationByCityName(cityName: String) : LiveData<Resource<ModelClass>> {
+    fun fetchWeatherInformationByCityName(cityName: String) : LiveData<Resource<CityData>> {
+        Log.i("Navaneeth","fetchWeatherInformationByCityName")
         weatherData.postValue(Resource.loading(null))
          viewModelScope.launch(Dispatchers.IO) {
             weatherRepository.fetchWeatherByCityName(cityName)
@@ -33,7 +36,7 @@ class SampleViewModel @Inject constructor(
                     Log.e("Navneeth","Unable t"+e.message)
                     weatherData.postValue(Resource.error(e.toString(), null))
                 }.collect {
-                    Log.i("NAvneeth" ,"Server resp " +it.name )
+                    Log.i("Navneeth" ,"Server resp " +it.name )
                 weatherData.postValue(Resource.success(it))
             }
         }
@@ -41,18 +44,18 @@ class SampleViewModel @Inject constructor(
     }
 
     fun fetchWeatherInformationByCoordinates(latitude: String,longitude :String) : LiveData<Resource<ModelClass>> {
-        weatherData.postValue(Resource.loading(null))
+        weatherDataByCoordinates.postValue(Resource.loading(null))
         viewModelScope.launch(Dispatchers.IO) {
             weatherRepository.fetchWeatherData(latitude,longitude)
                 .catch { e ->
                     Log.e("Navneeth","Unable t"+e.message)
-                    weatherData.postValue(Resource.error(e.toString(), null))
+                    weatherDataByCoordinates.postValue(Resource.error(e.toString(), null))
                 }.collect {
                     Log.i("Navneeth"," the Resoonse ")
-                    weatherData.postValue(Resource.success(it))
+                    weatherDataByCoordinates.postValue(Resource.success(it))
                 }
         }
-        return weatherData
+        return weatherDataByCoordinates
     }
 
     fun fetchCityNameForSuggestion(cityName:String):LiveData<Resource<List<String>>>{

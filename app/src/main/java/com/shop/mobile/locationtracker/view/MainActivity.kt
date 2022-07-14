@@ -24,7 +24,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.shop.mobile.locationtracker.R
 import com.shop.mobile.locationtracker.Utilities.ApiUtilities
-import com.shop.mobile.locationtracker.data.dao.WeatherInfoDao
 
 import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
 import com.shop.mobile.locationtracker.db.AppDatabase
@@ -55,7 +54,7 @@ class MainActivity : AppCompatActivity()  {
     private val mainViewModel: MainViewModel by viewModels()
     private val weatherData = MutableLiveData<Resource<ModelClass>>()
     private val appDatabase = AppDatabase
-    private lateinit var personDao: WeatherInfoDao
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,25 +62,19 @@ class MainActivity : AppCompatActivity()  {
         supportActionBar?.hide()
         activityMainBinding.clMainLayout.visibility = View.GONE
         fetchCurrentLocationWeather("12.9716", "77.5946");
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+      //  sampleViewModel.insertPersonData()
+        //sampleViewModel.readPersonData()
+
+       // getCity();
     }
 
 
-   /* private fun getCity(args: Array<String>
-    ): Unit {
+   /* private fun getCity()
+    {
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                if (actionId!=null)
-                {
-                    personDao.searchDatabase(activityMainBinding.etGetCityName.text.toString())
-                    if (actionId == activityMainBinding.etGetCityName.text.toString())
-                    {
-                        personDao.getPersons(activityMainBinding.etGetCityName,activityMainBinding.tvDateAndTime,activityMainBinding.tvTemp)
-                    }
-
-                }
-                else {
                         getCityWeather(activityMainBinding.etGetCityName.text.toString())
                         val view = this.currentFocus
                         if (view != null) {
@@ -90,11 +83,6 @@ class MainActivity : AppCompatActivity()  {
                             imm.hideSoftInputFromWindow(view.windowToken, 0)
                             activityMainBinding.etGetCityName.clearFocus()
 
-                            personDao.insertPersonData(
-                                activityMainBinding.etGetCityName,
-                                activityMainBinding.tvDateAndTime,
-                                activityMainBinding.tvTemp
-                            )
                         }
 
                 }
@@ -102,10 +90,8 @@ class MainActivity : AppCompatActivity()  {
 
             } else false
 
-        })
+        })*/
 
-
-    }*/
 
 
     private fun getCityWeather(cityName: String)  {

@@ -9,6 +9,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -25,10 +27,12 @@ object AppModule {
     @Singleton
     @Provides
     fun provideRetrofit(
-        gsonConverterFactory: GsonConverterFactory
+        gsonConverterFactory: GsonConverterFactory,
+        client: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(LocationConstants.BASE_URL)
+            .client(client)
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .addConverterFactory(gsonConverterFactory)
             .build()
@@ -41,5 +45,21 @@ object AppModule {
 
     @Provides
     fun provideGson(): Gson = GsonBuilder().create()
+
+    @Singleton
+    @Provides
+    fun providesHttpInterceptor(): HttpLoggingInterceptor {
+        var interceptor =  HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        return interceptor
+    }
+
+    @Singleton
+    @Provides
+    fun providesOkHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
+        return OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+    }
+
 
 }
