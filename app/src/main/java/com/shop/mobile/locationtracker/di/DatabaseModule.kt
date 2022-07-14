@@ -26,6 +26,6 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideDao(database: AppDatabase) = database.personDao()
+    fun provideDao(database: AppDatabase) = database.weatherDao()
 }
 

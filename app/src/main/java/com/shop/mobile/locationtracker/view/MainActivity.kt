@@ -24,7 +24,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.shop.mobile.locationtracker.R
 import com.shop.mobile.locationtracker.Utilities.ApiUtilities
-import com.shop.mobile.locationtracker.data.PersonDao
+import com.shop.mobile.locationtracker.data.dao.WeatherInfoDao
 
 import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
 import com.shop.mobile.locationtracker.db.AppDatabase
@@ -47,7 +47,6 @@ import kotlin.math.roundToInt
 private val TAG = "MainActivity"
 
 @AndroidEntryPoint
-
 class MainActivity : AppCompatActivity()  {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -56,7 +55,7 @@ class MainActivity : AppCompatActivity()  {
     private val mainViewModel: MainViewModel by viewModels()
     private val weatherData = MutableLiveData<Resource<ModelClass>>()
     private val appDatabase = AppDatabase
-    private lateinit var personDao: PersonDao
+    private lateinit var personDao: WeatherInfoDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,23 +63,18 @@ class MainActivity : AppCompatActivity()  {
         supportActionBar?.hide()
         activityMainBinding.clMainLayout.visibility = View.GONE
         fetchCurrentLocationWeather("12.9716", "77.5946");
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
-        sampleViewModel.insertPersonData()
-        sampleViewModel.readPersonData()
-
-        getCity();
     }
 
 
-    private fun getCity(args: Array<String>
+   /* private fun getCity(args: Array<String>
     ): Unit {
         activityMainBinding.etGetCityName.setOnEditorActionListener({ v, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (actionId!=null)
                 {
                     personDao.searchDatabase(activityMainBinding.etGetCityName.text.toString())
-
                     if (actionId == activityMainBinding.etGetCityName.text.toString())
                     {
                         personDao.getPersons(activityMainBinding.etGetCityName,activityMainBinding.tvDateAndTime,activityMainBinding.tvTemp)
@@ -111,7 +105,7 @@ class MainActivity : AppCompatActivity()  {
         })
 
 
-    }
+    }*/
 
 
     private fun getCityWeather(cityName: String)  {

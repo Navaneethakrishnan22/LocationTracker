@@ -4,11 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "person_table")
-data class Person(
+@Entity(tableName = "weather_table")
+data class WeatherInfo(
     var cityname: String,
     var datetime: String,
-    var temp: Int
+    var temp: Double
 ){
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0

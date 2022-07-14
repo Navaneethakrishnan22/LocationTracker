@@ -4,15 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.shop.mobile.locationtracker.data.Person
-import com.shop.mobile.locationtracker.data.PersonDao
+import com.shop.mobile.locationtracker.data.WeatherInfo
+import com.shop.mobile.locationtracker.data.dao.WeatherInfoDao
 
-private const val DB_NAME = "person_database"
+private const val DB_NAME = "weather_db"
 
-@Database(entities = [Person::class], version = 1, exportSchema = false)
+@Database(entities = [WeatherInfo::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun personDao(): PersonDao
+    abstract fun weatherDao(): WeatherInfoDao
 
     companion object {
         @Volatile private var instance: AppDatabase? = null
