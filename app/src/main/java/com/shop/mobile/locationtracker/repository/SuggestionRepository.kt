@@ -13,7 +13,7 @@ class SuggestionRepository @Inject constructor(private val  weatherInfoDao: Weat
 
     suspend fun fetchWeatherByCityName(cityName: String) : Flow<List<WeatherInfo>>{
         Log.i("Navneeth","City Name "+cityName)
-        var cityListFlow =  weatherInfoDao.getSuggestionOnTyping("t")
+        var cityListFlow =  weatherInfoDao.getSuggestionOnTyping(cityName)
         return cityListFlow
     }
 

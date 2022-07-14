@@ -53,7 +53,7 @@ class SampleActivity : AppCompatActivity() {
         activtysamplebinding.apply {
             btn.setOnClickListener {
                 var autotext = activtysamplebinding.autoTextView.text.toString()
-                Log.i("Navneeth","TExt in AutoText "+autotext)
+                Log.i("Navneeth","Text in AutoText "+autotext)
                 getWeatherDataByCity(autotext)
 
             }
@@ -64,7 +64,7 @@ class SampleActivity : AppCompatActivity() {
         sampleViewModel.fetchWeatherInformationByCoordinates("", "").observe(this, Observer {
             when (it.status) {
                 ResponseStatus.SUCCESS -> {
-                    Log.i("Navneeth", "THe Weather Data " + it.data!!.name)
+                    Log.i("Navneeth", "The Weather Data by coordinates" + it.data!!.name)
                 }
                 ResponseStatus.LOADING -> {
                     // Toast.makeText(this,it.message, Toast.LENGTH_SHORT).show()
@@ -82,7 +82,7 @@ class SampleActivity : AppCompatActivity() {
             .observe(this, Observer {
                 when (it.status) {
                     ResponseStatus.SUCCESS -> {
-                        Log.i("Navneeth", "THe Weather Data " + it.data!!.name)
+                        Log.i("Navneeth", "The Weather Data by City" + it.data!!.name)
                         activtysamplebinding.weatherResult.text =
                             "CityName :" + it.data!!.name + "----> Temp :  " + it.data?.main?.temp
                     }
@@ -120,6 +120,7 @@ class SampleActivity : AppCompatActivity() {
             this,
             android.R.layout.simple_list_item_1, suggestionList
         )
+
         autoSuggestionView.setAdapter(suggestionadapters)
         suggestionadapters.notifyDataSetChanged()
     }
