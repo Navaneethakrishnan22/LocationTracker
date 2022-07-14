@@ -10,8 +10,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -28,7 +26,7 @@ import com.shop.mobile.locationtracker.Utilities.ApiUtilities
 import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
 import com.shop.mobile.locationtracker.db.AppDatabase
 import com.shop.mobile.locationtracker.model.ModelClass
-import com.shop.mobile.locationtracker.utilities.Resource
+import com.shop.mobile.locationtracker.utilities.ResultData
 import com.shop.mobile.locationtracker.viewmodel.SampleViewModel
 import com.shop.mobile.locationtracker.viewmodel.MainViewModel
 
@@ -52,7 +50,7 @@ class MainActivity : AppCompatActivity()  {
     private lateinit var activityMainBinding: ActivityMainBinding
     private val sampleViewModel: SampleViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
-    private val weatherData = MutableLiveData<Resource<ModelClass>>()
+    private val weatherData = MutableLiveData<ResultData<ModelClass>>()
     private val appDatabase = AppDatabase
 
 

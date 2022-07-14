@@ -9,7 +9,7 @@ import com.shop.mobile.locationtracker.model.ModelClass
 import com.shop.mobile.locationtracker.model.city.CityData
 import com.shop.mobile.locationtracker.repository.SuggestionRepository
 import com.shop.mobile.locationtracker.repository.WeatherRepository
-import com.shop.mobile.locationtracker.utilities.Resource
+import com.shop.mobile.locationtracker.utilities.ResultData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -23,43 +23,43 @@ class SampleViewModel @Inject constructor(
 
 ) : ViewModel(){
 
-    private val weatherData = MutableLiveData<Resource<CityData>>()
-    private val suggestionData = MutableLiveData<Resource<List<String>>>()
-    private val weatherDataByCoordinates = MutableLiveData<Resource<ModelClass>>()
+    private val weatherData = MutableLiveData<ResultData<CityData>>()
+    private val suggestionData = MutableLiveData<ResultData<List<String>>>()
+    private val weatherDataByCoordinates = MutableLiveData<ResultData<ModelClass>>()
 
-    fun fetchWeatherInformationByCityName(cityName: String) : LiveData<Resource<CityData>> {
+    fun fetchWeatherInformationByCityName(cityName: String) : LiveData<ResultData<CityData>> {
         Log.i("Navaneeth","fetchWeatherInformationByCityName")
-        weatherData.postValue(Resource.loading(null))
+        weatherData.postValue(ResultData.loading(null))
          viewModelScope.launch(Dispatchers.IO) {
             weatherRepository.fetchWeatherByCityName(cityName)
                 .catch { e ->
                     Log.e("Navneeth","Unable t"+e.message)
-                    weatherData.postValue(Resource.error(e.toString(), null))
+                    weatherData.postValue(ResultData.error(e.toString(), null))
                 }.collect {
                     Log.i("Navneeth" ,"Server resp " +it.name )
-                weatherData.postValue(Resource.success(it))
+                weatherData.postValue(ResultData.success(it))
             }
         }
         return weatherData
     }
 
-    fun fetchWeatherInformationByCoordinates(latitude: String,longitude :String) : LiveData<Resource<ModelClass>> {
-        weatherDataByCoordinates.postValue(Resource.loading(null))
+    fun fetchWeatherInformationByCoordinates(latitude: String,longitude :String) : LiveData<ResultData<ModelClass>> {
+        weatherDataByCoordinates.postValue(ResultData.loading(null))
         viewModelScope.launch(Dispatchers.IO) {
             weatherRepository.fetchWeatherData(latitude,longitude)
                 .catch { e ->
                     Log.e("Navneeth","Unable t"+e.message)
-                    weatherDataByCoordinates.postValue(Resource.error(e.toString(), null))
+                    weatherDataByCoordinates.postValue(ResultData.error(e.toString(), null))
                 }.collect {
                     Log.i("Navneeth"," the Resoonse ")
-                    weatherDataByCoordinates.postValue(Resource.success(it))
+                    weatherDataByCoordinates.postValue(ResultData.success(it))
                 }
         }
         return weatherDataByCoordinates
     }
 
-    fun fetchCityNameForSuggestion(cityName:String):LiveData<Resource<List<String>>>{
-        suggestionData.postValue(Resource.loading(null))
+    fun fetchCityNameForSuggestion(cityName:String):LiveData<ResultData<List<String>>>{
+        suggestionData.postValue(ResultData.loading(null))
         Log.i("Navneeth","Suggestion List "+cityName)
         viewModelScope.launch (Dispatchers.IO){
            var suggestionlist =  suggestionRepository.fetchWeatherByCityName(cityName)
@@ -69,7 +69,7 @@ class SampleViewModel @Inject constructor(
                    it.forEach {
                        suggestionCitylist.add(it.cityname)
                    }
-                   suggestionData.postValue(Resource.success(suggestionCitylist))
+                   suggestionData.postValue(ResultData.success(suggestionCitylist))
                }
            }
         }

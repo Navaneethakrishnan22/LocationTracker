@@ -4,22 +4,17 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.shop.mobile.locationtracker.R
-import com.shop.mobile.locationtracker.databinding.ActivityMainBinding
 import com.shop.mobile.locationtracker.databinding.ActivitySampleBinding
-import com.shop.mobile.locationtracker.utilities.Status
-import com.shop.mobile.locationtracker.viewmodel.MainViewModel
+import com.shop.mobile.locationtracker.utilities.ResponseStatus
 import com.shop.mobile.locationtracker.viewmodel.SampleViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 @AndroidEntryPoint
 class SampleActivity : AppCompatActivity() {
@@ -68,13 +63,13 @@ class SampleActivity : AppCompatActivity() {
     private fun getWeatherUpdatesByCoordintes() {
         sampleViewModel.fetchWeatherInformationByCoordinates("", "").observe(this, Observer {
             when (it.status) {
-                Status.SUCCESS -> {
+                ResponseStatus.SUCCESS -> {
                     Log.i("Navneeth", "THe Weather Data " + it.data!!.name)
                 }
-                Status.LOADING -> {
+                ResponseStatus.LOADING -> {
                     // Toast.makeText(this,it.message, Toast.LENGTH_SHORT).show()
                 }
-                Status.ERROR -> {
+                ResponseStatus.ERROR -> {
                     //Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -86,15 +81,15 @@ class SampleActivity : AppCompatActivity() {
         sampleViewModel.fetchWeatherInformationByCityName(cityName)
             .observe(this, Observer {
                 when (it.status) {
-                    Status.SUCCESS -> {
+                    ResponseStatus.SUCCESS -> {
                         Log.i("Navneeth", "THe Weather Data " + it.data!!.name)
                         activtysamplebinding.weatherResult.text =
                             "CityName :" + it.data!!.name + "----> Temp :  " + it.data?.main?.temp
                     }
-                    Status.LOADING -> {
+                    ResponseStatus.LOADING -> {
 
                     }
-                    Status.ERROR -> {
+                    ResponseStatus.ERROR -> {
                         //Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -105,15 +100,15 @@ class SampleActivity : AppCompatActivity() {
         var suggestionList = sampleViewModel.fetchCityNameForSuggestion(search)
         suggestionList.observe(this, Observer {
             when (it.status) {
-                Status.ERROR -> {
+                ResponseStatus.ERROR -> {
                     Log.i("Navneeth", "Suggestion ERROR " + it.message)
                 }
-                Status.SUCCESS -> {
+                ResponseStatus.SUCCESS -> {
                     if (it.data != null) {
                         plugSuggestion(it.data!!)
                     }
                 }
-                Status.LOADING -> {
+                ResponseStatus.LOADING -> {
 
                 }
             }

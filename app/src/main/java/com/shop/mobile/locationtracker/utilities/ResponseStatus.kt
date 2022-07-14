@@ -1,6 +1,6 @@
 package com.shop.mobile.locationtracker.utilities
 
-enum class Status {
+enum class ResponseStatus {
     SUCCESS,
     ERROR,
     LOADING
