@@ -33,7 +33,6 @@ class SampleViewModel @Inject constructor(
          viewModelScope.launch(Dispatchers.IO) {
             weatherRepository.fetchWeatherByCityName(cityName)
                 .catch { e ->
-                    Log.e("Navneeth","Unable t"+e.message)
                     weatherData.postValue(ResultData.error(e.toString(), null))
                 }.collect {
                     Log.i("Navneeth" ,"Server resp " +it.name )

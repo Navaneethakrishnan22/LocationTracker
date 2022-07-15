@@ -90,7 +90,7 @@ class SampleActivity : AppCompatActivity() {
 
                     }
                     ResponseStatus.ERROR -> {
-                        //Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                        activtysamplebinding.weatherResult.text = "Enter correct name of City !!"
                     }
                 }
             })
