@@ -20,7 +20,7 @@ class WeatherRepository @Inject constructor(private val weatherApiService: Weath
         weatherModelFlow.collect{
             if(it!=null){
                 var weatherInfo = WeatherInfo(it.name,System.currentTimeMillis().toString(),it.main.temp)
-                weatherInfoDao.inserWeatherInfoData(weatherInfo);
+                weatherInfoDao.insertWeatherInfoData(weatherInfo);
             }
         }
         return weatherModelFlow
@@ -35,7 +35,7 @@ class WeatherRepository @Inject constructor(private val weatherApiService: Weath
             if(it!=null){
                 Log.i("Navneeth","City Name --->"+it.name)
                 var weatherInfo = WeatherInfo(it.name,System.currentTimeMillis().toString(),it.main.temp)
-                weatherInfoDao.inserWeatherInfoData(weatherInfo);
+                weatherInfoDao.insertWeatherInfoData(weatherInfo);
             }
         }
 

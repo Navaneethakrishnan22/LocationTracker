@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface WeatherInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun inserWeatherInfoData(weatherInfo: WeatherInfo)
+    suspend fun insertWeatherInfoData(weatherInfo: WeatherInfo)
 
     @Query("SELECT * FROM weather_table WHERE cityname LIKE :searchQuery OR datetime LIKE :searchQuery")
     fun searchDatabase(searchQuery: String): Flow<List<WeatherInfo>>
@@ -20,7 +20,7 @@ interface WeatherInfoDao {
     suspend fun updatePerson(weatherInfo: WeatherInfo) {
         weatherInfo.let {
             deleteFromWeatherInfo()
-            inserWeatherInfoData(it)
+            insertWeatherInfoData(it)
         }
     }
 
