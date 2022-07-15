@@ -27,7 +27,7 @@ class WeatherRepository @Inject constructor(
             if (it != null) {
                 var weatherInfo =
                     WeatherInfo(it.name, System.currentTimeMillis().toString(), it.main.temp)
-                weatherInfoDao.inserWeatherInfoData(weatherInfo);
+                weatherInfoDao.insertWeatherInfoData(weatherInfo);
             }
         }
         return weatherModelFlow
@@ -41,7 +41,7 @@ class WeatherRepository @Inject constructor(
             if (it != null) {
                 var weatherInfo =
                     WeatherInfo(it.name, System.currentTimeMillis().toString(), it.main.temp)
-                weatherInfoDao.inserWeatherInfoData(weatherInfo);
+                weatherInfoDao.insertWeatherInfoData(weatherInfo);
             }
         }
         return weatherModelFlow
